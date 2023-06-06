@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      :root {
+        --squares: 10;
+        --squareBackground: black;
+      }
+      body {
+        height: 100vh;
+        margin: 0;
+        display: grid;
+        place-content: center;
+      }
+      button {
+        background: #be991f;
+        border: none;
+        border-radius: 10px;
+        width: 200px;
+        height: 50px;
+        margin-bottom: 30px;
+        justify-self: center;
+      }
+      button:hover {
+        background: #949225;
+      }
+      button:active {
+        transform: translateY(-2px);
+      }
+      section {
+        padding: 10px;
+        display: grid;
+        width: 800px;
+        aspect-ratio: 1/1;
+        grid-template-columns: repeat(var(--squares), 1fr);
+        grid-template-rows: repeat(var(--squares), 1fr);
+        border-radius: 20px;
+        background: #eee8e8;
+        box-shadow: 7px 7px 15px 5px rgba(83, 75, 75, 0.7);
+      }
+      div {
+        border-radius: 5px;
+        transition: 0.1s ease-in;
+      }
+      div:hover {
+        background: var(--squareBackground);
+      }
+    </style>
+  </head>
+  <body>
+    <button>Change squares per row</button>
+    <section></section>
+    <script>
+      const colors = [
+        "rgb(32, 42, 175)",
+        "rgb(232, 17, 35)",
+        "rgb(25, 161, 175)",
+        "rgb(191, 223, 50)",
+        "rgb(236, 150, 150)",
+      ];
+      const section = document.querySelector("section");
+      const button = document.querySelector("button");
+      let squaresPerRow = 10;
+      let animationStart = 1;
+      for (let i = 0; i < squaresPerRow * squaresPerRow; i++) {
+        const createDiv = document.createElement("div");
+        section.appendChild(createDiv);
+      }
+
+      //animation
+
+      function animation(interval) {
+        window.setInterval(() => {
+          for (let i = 0; i < squaresPerRow * squaresPerRow; i++) {
+            if (i % animationStart == 0) {
+              document.querySelectorAll("div")[i].style.background = "black";
+            } else {
+              document.querySelectorAll("div")[i].style.background = "none";
+            }
+          }
+          if (animationStart === squaresPerRow * squaresPerRow) {
+            animationStart = 0;
+          }
+          animationStart++;
+        }, interval);
+      }
+
+      // button to change number of div's
+      function changeNumberOfDivs() {
+        const divs = document.querySelectorAll("div");
+        const maxSquaresPerRow = 100;
+        for (let i = 0; i < divs.length; i++) {
+          divs[i].remove();
+        }
+        let squares = prompt("How many squares do you want per row");
+        while (
+          /^\d{1,}$/.test(squares) === false ||
+          squares === "" ||
+          parseInt(squares) > maxSquaresPerRow
+        ) {
+          squares = prompt(
+            `You have to choose a number between 1 and ${maxSquaresPerRow}`
+          );
+        }
+        for (let i = 0; i < squares * squares; i++) {
+          const createDiv = document.createElement("div");
+          section.appendChild(createDiv);
+        }
+        section.style.setProperty("--squares", `${squares}`);
+        squaresPerRow = squares;
+      }
+
+      // Hover effect
+      function hoverEffect() {
+        section.addEventListener("mouseover", (a) => {
+          let randomColor = Math.floor(Math.random() * colors.length);
+          if (a.target.tagName === "DIV") {
+            a.target.style.background = colors[randomColor];
+          }
+        });
+        section.addEventListener("mouseout", (a) => {
+          let randomColor = Math.floor(Math.random() * colors.length);
+          if (a.target.tagName === "DIV") {
+            a.target.style.background = colors[randomColor];
+          }
+        });
+      }
+
+      console.log(button);
+
+      button.addEventListener("click", changeNumberOfDivs);
+      hoverEffect();
+      animation(300);
+    </script>
+  </body>
+</html>
